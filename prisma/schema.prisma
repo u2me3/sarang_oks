@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  role      String   @default("ADMIN") // ADMIN, USER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department {
+  id        String               @id @default(cuid())
+  name      String               @unique
+  projects  CostSavingProject[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+enum Category {
+  INVENTORY
+  CONSUMABLES
+  ENERGY
+  MAINTENANCE
+  OUTSOURCING
+  FINANCE
+  PRINTING
+  OTHER
+}
+
+enum CalculationType {
+  PERCENT_OF_BASELINE
+  USAGE_TIMES_UNIT_COST
+  DIRECT_AMOUNT
+}
+
+model CostSavingProject {
+  id               String               @id @default(cuid())
+  departmentId     String
+  department       Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  objective        String
+  keySuccess       String
+  projectName      String
+  description      String?
+  category         Category             @default(OTHER)
+  startMonth       Int                  // 1-12
+  endMonth         Int                  // 1-12
+  year             Int                  @default(2026)
+  
+  // Baseline Data
+  calcType         CalculationType      @default(DIRECT_AMOUNT)
+  baselineAmount   Float?               // For percent_of_baseline
+  baselineUsage    Float?               // For usage_times_unit_cost
+  unitCost         Float?               // For usage_times_unit_cost
+  targetSavingRate Float?               // Target Saving %
+  
+  isActive         Boolean              @default(true)
+  remark           String?
+  
+  performances     MonthlyPerformance[]
+  
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model MonthlyPerformance {
+  id           String            @id @default(cuid())
+  projectId    String
+  project      CostSavingProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  month        Int               // 1-12
+  year         Int               @default(2026)
+  
+  actualRate   Float?            // Actual saved %
+  actualAmount Float             // Final calculated or direct amount
+  isExecuted   Boolean           @default(true)
+  memo         String?
+  
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([projectId, year, month])
+}
