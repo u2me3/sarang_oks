@@ -17,6 +17,28 @@
 - **UI**: Tailwind CSS, Lucide Icons, Recharts
 - **Validation**: Zod
 
+## GitHub 연동
+이 프로젝트는 `hospital-okr-manager`와 동일한 계정(`u2me3`)을 기반으로 설정되었습니다.
+GitHub에 `sarang_oks` 저장소를 생성한 후 아래 명령어로 연결하실 수 있습니다.
+
+```bash
+git remote add origin https://github.com/u2me3/sarang_oks.git
+git push -u origin master
+```
+
+## Supabase 설정 (Prisma 연동)
+`hospital-okr-manager`에서 사용 중인 Supabase 프로젝트와 동기화되었습니다. 
+하지만 Prisma ORM을 통한 DB 직접 연결을 위해 아래 환경변수 추가가 필요합니다.
+
+1. `.env` 파일에 아래 정보 입력:
+   - `DATABASE_URL`: Supabase > Settings > Database > Connection String (Transaction 모드)
+   - `DIRECT_URL`: Supabase > Settings > Database > Connection String (Session 모드)
+
+2. 설정 후 아래 명령어로 DB 스키마 생성:
+```bash
+npx prisma db push
+```
+
 ## 시작하기
 
 ### 1. 환경 변수 설정

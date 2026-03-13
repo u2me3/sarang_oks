@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
-import { Plus, Trash2, Building2 } from "lucide-react";
-import { createDepartment, deleteDepartment } from "@/lib/actions/department";
+import { Plus, Building2 } from "lucide-react";
+import { createDepartment } from "@/lib/actions/department";
+import DeleteDepartmentButton from "@/components/departments/DeleteDepartmentButton";
 
 export default async function DepartmentsPage() {
     const departments = await prisma.department.findMany({
@@ -24,7 +25,10 @@ export default async function DepartmentsPage() {
                             <Plus className="text-blue-500" size={20} />
                             새 부서 등록
                         </h3>
-                        <form action={createDepartment} className="space-y-4">
+                        <form action={async (formData) => {
+                            "use server";
+                            await createDepartment(formData);
+                        }} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">부서명</label>
                                 <input
@@ -66,17 +70,7 @@ export default async function DepartmentsPage() {
                                             <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mt-0.5">인천사랑병원</p>
                                         </div>
                                     </div>
-                                    <form action={async () => {
-                                        "use client";
-                                        if (confirm(`${dept.name} 부서를 삭제하시겠습니까?`)) {
-                                            await deleteDepartment(dept.id);
-                                        }
-                                    }}>
-                                        {/* Note: Server action invocation from client button needs adjustment in real world, keeping it simple for MVP structure */}
-                                        <button className="p-2 rounded-lg text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all opacity-0 group-hover:opacity-100">
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </form>
+                                    <DeleteDepartmentButton id={dept.id} name={dept.name} />
                                 </div>
                             ))}
                         </div>
