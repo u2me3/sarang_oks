@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import prisma from "@/lib/prisma";
 import { Plus, Target, Building2, Calendar, MoreHorizontal, ChevronRight } from "lucide-react";
 import Link from "next/link";

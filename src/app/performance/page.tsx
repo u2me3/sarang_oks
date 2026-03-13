@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import prisma from "@/lib/prisma";
 import { Calculator, Calendar, Building2, CheckCircle2, AlertCircle } from "lucide-react";
 import { formatCurrency, formatPercent } from "@/lib/utils";
@@ -44,8 +46,8 @@ export default async function PerformancePage() {
 
                         return (
                             <div key={project.id} className={`group p-6 rounded-[2rem] border transition-all duration-300 backdrop-blur-md ${isCompleted
-                                    ? "bg-emerald-500/[0.03] border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]"
-                                    : "bg-slate-900/40 border-slate-800/60 hover:border-slate-700 shadow-sm"
+                                ? "bg-emerald-500/[0.03] border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]"
+                                : "bg-slate-900/40 border-slate-800/60 hover:border-slate-700 shadow-sm"
                                 }`}>
                                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                                     {/* Left: Project Info */}
@@ -89,8 +91,8 @@ export default async function PerformancePage() {
                                                 <span className="absolute right-3 top-2.5 text-slate-600 font-bold text-sm">%</span>
                                             </div>
                                             <button className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 ${isCompleted
-                                                    ? "bg-slate-800 text-slate-400 cursor-not-allowed"
-                                                    : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
+                                                ? "bg-slate-800 text-slate-400 cursor-not-allowed"
+                                                : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
                                                 }`}>
                                                 저장
                                             </button>
