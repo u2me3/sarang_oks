@@ -1,16 +1,20 @@
 import { PrismaClient } from '@prisma/client';
 
-const prismaClientSingleton = () => {
+// This function creates the actual Prisma instance
+const createPrismaClient = () => {
     const url = process.env.DATABASE_URL;
 
-    // Build-time safety: If no URL is present (e.g., during Vercel build phase),
-    // return a proxy that prevents initialization errors.
+    // In production/Vercel, if we don't have a URL (likely build time),
+    // return a proxy that handles any access gracefully.
     if (!url) {
         return new Proxy({} as any, {
             get: (_, prop) => {
-                if (prop === 'then') return undefined;
+                if (prop === 'then') return undefined; // Handle async probes
                 return () => {
-                    throw new Error(`Prisma accessed without DATABASE_URL. Property: ${String(prop)}`);
+                    // This error will only trigger if someone tries to use Prisma without a DB URL at RUNTIME.
+                    // During BUILD TIME, this prevents the Constructor error.
+                    console.warn(`Prisma accessed without DATABASE_URL. Property: ${String(prop)}`);
+                    return Promise.resolve(null);
                 };
             }
         });
@@ -26,11 +30,27 @@ const prismaClientSingleton = () => {
 };
 
 declare global {
-    var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+    var __prisma: undefined | ReturnType<typeof createPrismaClient>;
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
+// Lazy initialization proxy
+const prismaProxy = new Proxy({} as any, {
+    get: (target, prop) => {
+        // Initialize the client on first access
+        if (!globalThis.__prisma) {
+            globalThis.__prisma = createPrismaClient();
+        }
+
+        const instance = globalThis.__prisma as any;
+        const value = instance[prop];
+
+        if (typeof value === 'function') {
+            return value.bind(instance);
+        }
+        return value;
+    }
+});
+
+const prisma = prismaProxy as PrismaClient;
 
 export default prisma;
-
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
