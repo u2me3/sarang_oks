@@ -1,12 +1,30 @@
 import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
-    if (process.env.DATABASE_URL?.startsWith('prisma+postgres://')) {
+    const url = process.env.DATABASE_URL;
+
+    // Build-time safety: If no URL is present (e.g., during Vercel build phase),
+    // return a proxy that prevents initialization errors.
+    if (!url) {
+        return new Proxy({} as any, {
+            get: (_, prop) => {
+                if (prop === 'then') return undefined;
+                return () => {
+                    throw new Error(`Prisma accessed without DATABASE_URL. Property: ${String(prop)}`);
+                };
+            }
+        });
+    }
+
+    if (url.startsWith('prisma+postgres://')) {
         return new PrismaClient({
-            accelerateUrl: process.env.DATABASE_URL
+            accelerateUrl: url
         } as any);
     }
-    return new PrismaClient();
+
+    return new PrismaClient({
+        datasourceUrl: url
+    } as any);
 };
 
 declare global {
