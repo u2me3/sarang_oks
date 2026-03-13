@@ -56,7 +56,7 @@ export default async function DashboardPage() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, i) => {
+                {stats.map((stat: any, i: number) => {
                     const Icon = stat.icon;
                     return (
                         <div key={i} className="group relative p-6 rounded-3xl bg-slate-900/40 border border-slate-800/60 hover:border-blue-500/30 transition-all duration-300 backdrop-blur-md overflow-hidden">
