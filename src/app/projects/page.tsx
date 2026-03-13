@@ -36,7 +36,7 @@ export default async function ProjectsPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-4">
-                    {projects.map((project) => (
+                    {projects.map((project: any) => (
                         <div key={project.id} className="group p-6 rounded-3xl bg-slate-900/40 border border-slate-800/60 hover:border-blue-500/30 transition-all duration-300 backdrop-blur-md">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                                 <div className="space-y-3 flex-1 min-w-0">

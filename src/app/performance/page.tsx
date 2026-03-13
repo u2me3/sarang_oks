@@ -40,7 +40,7 @@ export default async function PerformancePage() {
                         <p className="text-slate-700 text-sm mt-1">사업 관리 메뉴에서 사업을 먼저 등록하거나 활성화해 주세요.</p>
                     </div>
                 ) : (
-                    projects.map((project) => {
+                    projects.map((project: any) => {
                         const perf = project.performances[0];
                         const isCompleted = !!perf;
 

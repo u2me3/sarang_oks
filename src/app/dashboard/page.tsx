@@ -24,7 +24,7 @@ export default async function DashboardPage() {
         include: { project: true }
     });
 
-    const totalMonthlySaving = performances.reduce((acc, p) => acc + p.actualAmount, 0);
+    const totalMonthlySaving = performances.reduce((acc: number, p: any) => acc + (p.actualAmount || 0), 0);
     const totalYearlySaving = await prisma.monthlyPerformance.aggregate({
         where: { year: currentYear },
         _sum: { actualAmount: true }
