@@ -22,9 +22,7 @@ const prismaClientSingleton = () => {
         } as any);
     }
 
-    return new PrismaClient({
-        datasourceUrl: url
-    } as any);
+    return new PrismaClient();
 };
 
 declare global {
