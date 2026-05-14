@@ -1,14 +1,15 @@
-import "dotenv/config";
+import * as dotenv from 'dotenv';
 import { PrismaClient, Category, CalculationType } from '@prisma/client';
+import path from 'path';
 
-const prisma = new PrismaClient({
-    datasource: {
-        url: process.env.DATABASE_URL
-    }
-} as any);
+// Manually load .env from the root directory
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+const prisma = new PrismaClient();
 
 async function main() {
     console.log('🌱 Seeding database...');
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Loaded' : 'NOT Loaded');
 
     // 1. Clear existing data
     await prisma.monthlyPerformance.deleteMany();
