@@ -2,12 +2,14 @@ import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:51214/template1?sslmode=disable";
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-
 const prismaClientSingleton = () => {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+        // Fallback for local development if needed, but on Vercel this should be set
+        return new PrismaClient(); 
+    }
+    const pool = new Pool({ connectionString });
+    const adapter = new PrismaPg(pool);
     return new PrismaClient({ adapter });
 };
 
